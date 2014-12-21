@@ -1,0 +1,152 @@
+#!/usr/bin/env ruby
+
+require 'pathname'
+ENV['BUNDLE_GEMFILE'] ||= File.expand_path(
+  '../../Gemfile',
+  Pathname.new(__FILE__).realpath)
+$LOAD_PATH << File.expand_path('../../lib', __FILE__)
+
+require 'rubygems'
+require 'bundler/setup'
+require 'battleships/grid'
+
+WIDTH = 10
+HEIGHT = 10
+
+def show_grid(grid, grid2 = nil)
+  separator = ' |' + '-+' * (WIDTH - 1) + '-|'
+
+  print ' |'
+  (0..(WIDTH - 1)).each do |x|
+    print "#{x}|"
+  end
+  if grid2
+    print "  |"
+    (0..(WIDTH - 1)).each do |x|
+      print "#{x}|"
+    end
+  end
+  print "\n"
+  (0..(HEIGHT - 1)).each do |y|
+    print "#{separator} " if grid2
+    print "#{separator}\n#{y}"
+    (0..(WIDTH - 1)).each do |x|
+      print '|' + grid.get_cell(x, y).symbol
+    end
+    if grid2
+      print "| #{y}"
+      (0..(WIDTH - 1)).each do |x|
+        print '|' + grid2.get_cell(x, y).symbol
+      end
+    end
+    print "|\n"
+  end
+  print "#{separator} " if grid2
+  print "#{separator}\n"
+end
+
+def get_coordinate(max, label)
+  c = -1
+  while c < 0 or c > max
+    print "#{label} (0..#{max}): "
+    c = gets.chomp
+    if c =~ /^\d+$/
+      c = c.to_i
+    else
+      c = -1
+    end
+  end
+  c
+end
+
+def get_orientation
+  while true # Until a valid answer has been given
+    print "Orientation (h/v): "
+    o = gets.chomp
+    if o =~ /^[hH]/
+      return Battleships::HORIZONTAL
+    elsif o =~ /^[vV]/
+      return Battleships::VERTICAL
+    end
+  end
+end
+
+grid = Battleships::Grid.new(WIDTH, HEIGHT)
+ai_grid = Battleships::Grid.new(WIDTH, HEIGHT)
+guesses_grid = Battleships::Grid.new(WIDTH, HEIGHT)
+ai_guesses_grid = Battleships::Grid.new(WIDTH, HEIGHT)
+
+# AI's positions
+[:destroyer, :cruiser, :submarine, :battleship, :aircraft_carrier].each do |s|
+  while !ai_grid.add_ship(
+    rand(WIDTH),
+    rand(HEIGHT),
+    s,
+    rand(100) >= 50 ? Battleships::HORIZONTAL : Battleships::VERTICAL
+  ) do
+  end
+end
+
+# Players positions
+[:destroyer, :cruiser, :submarine, :battleship, :aircraft_carrier].each do |s|
+  show_grid(grid)
+  puts "Position for #{s.to_s}"
+  while !grid.add_ship(
+    get_coordinate(WIDTH - 1, 'x'),
+    get_coordinate(HEIGHT - 1, 'y'),
+    s,
+    get_orientation
+  ) do
+    puts "Illegal position"
+    puts "Position for #{s.to_s}"
+  end
+end
+
+while true do
+  show_grid(grid, guesses_grid)
+
+  puts "Guess"
+  guess = false
+  while guess == false do
+    x = get_coordinate(WIDTH - 1, 'x')
+    y = get_coordinate(HEIGHT - 1, 'y')
+    guess = ai_grid.fire(x, y)
+    if guess == false
+      puts "You have already tried that cell"
+    elsif guess == nil
+      puts "Missed!"
+      guesses_grid.miss(x, y)
+    else
+      puts "Hit!"
+      guesses_grid.hit(x, y)
+      if ai_grid.destroyed?(guess)
+        puts "You destroyed my #{guess}"
+        ai_grid.get_ship(guess).each do |c|
+          guesses_grid.get_cell(c.x, c.y).content = guess
+        end
+      end
+    end
+  end
+
+  guess = false
+  while guess == false do
+    x = rand(10)
+    y = rand(10)
+    guess = grid.fire(x, y)
+    if guess != false
+      if guess == nil
+        puts "I missed!"
+        ai_guesses_grid.miss(x, y)
+      else
+        puts "I hit!"
+        ai_guesses_grid.hit(x, y)
+        if grid.destroyed?(guess)
+          puts "I destroyed your #{guess}"
+          grid.get_ship(guess).each do |c|
+            ai_guesses_grid.get_cell(c.x, c.y).content = guess
+          end
+        end
+      end
+    end
+  end
+end
