@@ -1,6 +1,9 @@
 source 'https://rubygems.org'
-gem 'rspec'
-gem 'rubocop'
-#gem 'coverage'
+
+group :development, :test do
+  gem 'rspec'
+  gem 'rubocop'
+  gem 'simplecov'
+end
 
 gem 'colorize'
