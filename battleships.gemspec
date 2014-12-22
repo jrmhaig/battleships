@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.author = "Joe Haig"
   s.email = "josephhaig@gmail.com"
   s.homepage = "https://github.com/jrmhaig/battleships"
-  s.files = Dir["{bin,lib}/**/*"] + %w(LICENSE.md README.md)
+  s.files = Dir["{bin,lib}/**/*"] + %w(LICENSE README.md)
   s.executables = ['battleships']
   s.add_runtime_dependency 'colorize'
 end
