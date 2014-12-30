@@ -6,12 +6,10 @@ ENV['BUNDLE_GEMFILE'] ||= File.expand_path(
   Pathname.new(__FILE__).realpath)
 $LOAD_PATH << File.expand_path('../../lib', __FILE__)
 
-require 'rubygems'
 require 'bundler/setup'
 require 'battleships/grid'
 
-WIDTH = 10
-HEIGHT = 10
+WIDTH, HEIGHT = 10, 10
 
 def show_grid(grid, grid2 = nil)
   separator = ' |' + '-+' * (WIDTH - 1) + '-|'
@@ -26,7 +24,7 @@ def show_grid(grid, grid2 = nil)
       print "#{x}|"
     end
   end
-  print "\n"
+  puts
   (0..(HEIGHT - 1)).each do |y|
     print "#{separator} " if grid2
     print "#{separator}\n#{y}"
@@ -39,15 +37,15 @@ def show_grid(grid, grid2 = nil)
         print '|' + grid2.get_cell(x, y).symbol
       end
     end
-    print "|\n"
+    puts "| "
   end
   print "#{separator} " if grid2
-  print "#{separator}\n"
+  puts "#{separator}"
 end
 
 def get_coordinate(max, label)
   c = -1
-  while c < 0 or c > max
+  while c < 0 || c > max
     print "#{label} (0..#{max}): "
     c = gets.chomp
     if c =~ /^\d+$/
@@ -60,7 +58,7 @@ def get_coordinate(max, label)
 end
 
 def get_orientation
-  while true # Until a valid answer has been given
+  loop do # Until a valid answer has been given
     print "Orientation (h/v): "
     o = gets.chomp
     if o =~ /^[hH]/
@@ -102,7 +100,7 @@ end
   end
 end
 
-while true do
+loop do
   show_grid(grid, guesses_grid)
 
   puts "Guess"
