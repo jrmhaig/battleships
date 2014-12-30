@@ -15,7 +15,7 @@ class Battleships
 
     def add_ship(x, y, ship, orientation)
       l = Battleships.ship_length(ship)
-      return false if l <= 0 || x < 0 || y < 0 || !line_free?(x, y, l, orientation) || (orientation == Battleships::HORIZONTAL && x + l > @width) || (orientation == Battleships::VERTICAL && y + l > @height)
+      return false if l <= 0 || x < 0 || y < 0 || !line_free?(x, y, l, orientation) || (orientation == Battleships::HORIZONTAL && x + l > @width) || (orientation == Battleships::VERTICAL && y + l > @height) || get_ship(ship).length > 0
 
       @cells.concat(
         (0..(l - 1)).collect do |z|

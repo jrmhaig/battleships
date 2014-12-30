@@ -16,13 +16,19 @@ RSpec.describe Battleships::Grid do
   describe 'add_ship' do
     let(:grid) { Battleships::Grid.new(10, 10) }
 
-    it 'adds a horizontal ship in a valid position to the grid' do
+    it 'adds a horizontal ship in a valid position at the left edge of the grid' do
       expect(grid.add_ship(0, 0, :battleship, Battleships::HORIZONTAL)).to be_truthy
+    end
+
+    it 'adds a horizontal ship in a valid position at the right edge of the grid' do
       expect(grid.add_ship(6, 0, :battleship, Battleships::HORIZONTAL)).to be_truthy
     end
 
-    it 'adds a vertical ship in a valid position to the grid' do
+    it 'adds a vertical ship in a valid position at the top edge of the grid' do
       expect(grid.add_ship(0, 0, :battleship, Battleships::VERTICAL)).to be_truthy
+    end
+
+    it 'adds a vertical ship in a valid position at the bottom edge of the grid' do
       expect(grid.add_ship(0, 6, :battleship, Battleships::VERTICAL)).to be_truthy
     end
 
@@ -49,6 +55,11 @@ RSpec.describe Battleships::Grid do
     it 'fails to add overlapping ships' do
       grid.add_ship(0, 1, :battleship, Battleships::HORIZONTAL)
       expect(grid.add_ship(1, 0, :destroyer, Battleships::VERTICAL)).to be_falsy
+    end
+
+    it 'fails to add a ship twice' do
+      grid.add_ship(0, 1, :battleship, Battleships::HORIZONTAL)
+      expect(grid.add_ship(0, 2, :battleship, Battleships::HORIZONTAL)).to be_falsy
     end
   end
 
