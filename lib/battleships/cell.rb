@@ -1,5 +1,5 @@
 require 'colorize'
-require_relative "battleships.rb"
+require "battleships"
 
 module Battleships
   class Cell # A cell on the battleships grid
