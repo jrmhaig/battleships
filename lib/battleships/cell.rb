@@ -1,30 +1,25 @@
 require 'colorize'
+require "battleships"
 
-class Battleships
-  # A cell on the battleships grid
-  class Cell
-    attr_reader :x
-    attr_reader :y
-    attr_accessor :content
-    attr_accessor :shot
+module Battleships
+  class Cell # A cell on the battleships grid
+    attr_reader :x, :y
+    attr_accessor :content, :shot
 
     def initialize(x, y, content = nil)
-      @x = x
-      @y = y
-      @content = content
-      @shot = false
+      @x, @y, @content, @shot = x, y, content, false
     end
 
     def ==(other)
-      other.class == Battleships::Cell && @x == other.x && @y == other.y && @content == other.content
+      other.class == self.class && @x == other.x && @y == other.y && @content == other.content
     end
 
     def symbol
       if @content
-        if @content == :unknown and @shot == true
-          '?'.colorize(:red)
+        if @content == :unknown and @shot
+          '?'.colorize :red
         else
-          Battleships.ship_name(@content).chars.first.upcase.colorize(@shot ? :red : :blue)
+          ship_name(@content).chars.first.upcase.colorize(@shot ? :red : :blue)
         end
       else
         @shot ? '*'.colorize(:red) : '.'
@@ -32,8 +27,7 @@ class Battleships
     end
 
     def hit
-      @content = :unknown
-      @shot = true
+      @content, @shot = :unknown, true
     end
   end
 end

@@ -1,9 +1,8 @@
-require 'battleships/grid'
+require 'grid'
 
 # The Game of Battleships
-class Battleships
-  HORIZONTAL = 0
-  VERTICAL = 1
+module Battleships
+  HORIZONTAL, VERTICAL = 0, 1
 
   SHIPS = {
     destroyer: {
