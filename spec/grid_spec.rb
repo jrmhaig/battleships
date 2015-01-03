@@ -1,52 +1,25 @@
 require 'spec_helper'
-
+require "battleships/grid"
 RSpec.describe Battleships::Grid do
-  describe 'initialize' do
-    it 'creates a grid of the given width' do
-      grid = Battleships::Grid.new(10, 10)
-      expect(grid.width).to be 10
-    end
-
-    it 'creates a grid of the given height' do
-      grid = Battleships::Grid.new(10, 10)
-      expect(grid.height).to be 10
+  describe '#new' do
+    context "10, 10" do
+      subject {Battleships::Grid.new 10, 10}
+      its(:width) {is_expected.to eq 10}
+      its(:height) {is_expected.to eq 10}
+      its(:add_ship, 0, 0, :battleship, Battleships::HORIZONTAL) {is_expected.to be_truthy}
+      its(:add_ship, 6, 0, :battleship, Battleships::HORIZONTAL) {is_expected.to be_truthy}
+      its(:add_ship, 0, 0, :battleship, Battleships::VERTICAL) {is_expected.to be_truthy}
+      its(:add_ship, 0, 6, :battleship, Battleships::VERTICAL) {is_expected.to be_truthy}
+      its(:add_ship, 7, 0, :battleship, Battleships::HORIZONTAL) {is_expected.to be_falsy}
+      its(:add_ship, -1, 0, :battleship, Battleships::HORIZONTAL) {is_expected.to be_falsy}
+      its(:add_ship, 0, 7, :battleship, Battleships::VERTICAL) {is_expected.to be_falsy}
+      its(:add_ship, 0, -1, :battleship, Battleships::VERTICAL) {is_expected.to be_falsy}
     end
   end
 
   describe 'add_ship' do
-    let(:grid) { Battleships::Grid.new(10, 10) }
-
-    it 'adds a horizontal ship in a valid position at the left edge of the grid' do
-      expect(grid.add_ship(0, 0, :battleship, Battleships::HORIZONTAL)).to be_truthy
-    end
-
-    it 'adds a horizontal ship in a valid position at the right edge of the grid' do
-      expect(grid.add_ship(6, 0, :battleship, Battleships::HORIZONTAL)).to be_truthy
-    end
-
-    it 'adds a vertical ship in a valid position at the top edge of the grid' do
-      expect(grid.add_ship(0, 0, :battleship, Battleships::VERTICAL)).to be_truthy
-    end
-
-    it 'adds a vertical ship in a valid position at the bottom edge of the grid' do
-      expect(grid.add_ship(0, 6, :battleship, Battleships::VERTICAL)).to be_truthy
-    end
-
-    it 'fails to add a ship off the right of the grid' do
-      expect(grid.add_ship(7, 0, :battleship, Battleships::HORIZONTAL)).to be_falsy
-    end
-
-    it 'fails to add a ship off the left of the grid' do
-      expect(grid.add_ship(-1, 0, :battleship, Battleships::HORIZONTAL)).to be_falsy
-    end
-
-    it 'fails to add a ship off the bottom of the grid' do
-      expect(grid.add_ship(0, 7, :battleship, Battleships::VERTICAL)).to be_falsy
-    end
-
-    it 'fails to add a ship off the left of the grid' do
-      expect(grid.add_ship(0, -1, :battleship, Battleships::VERTICAL)).to be_falsy
-    end
+    subject {
+     { Battleships::Grid.new(10, 10) }
 
     it 'adds the right number of cells' do
       expect { grid.add_ship(0, 0, :battleship, Battleships::HORIZONTAL) }.to change(grid.instance_variable_get(:@cells), :length).by Battleships.ship_length(:battleship)
