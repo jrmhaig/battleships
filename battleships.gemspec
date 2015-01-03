@@ -10,7 +10,6 @@ Gem::Specification.new do |s|
   	s.extra_rdoc_files	=	Dir['*.md']
   	s.executables		<<	'battleships'
   	s.license		=	"MIT"
-  	s.add_development_dependency "rspec-its"
  
   	s.add_runtime_dependency 'colorize'
 end
