@@ -11,5 +11,8 @@ Gem::Specification.new do |s|
   	s.executables		<<	'battleships'
   	s.license		=	"MIT"
  
-  	s.add_runtime_dependency 'colorize'
+  	s.add_runtime_dependency 'colorize', '~> 0.8'
+    s.add_development_dependency 'rspec', '~> 3.7'
+    s.add_development_dependency 'rubocop', '~> 0.52'
+    s.add_development_dependency 'simplecov', '~> 0.15'
 end
